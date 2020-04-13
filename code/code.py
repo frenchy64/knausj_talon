@@ -10,6 +10,9 @@ extension_lang_map = {
 "cpp"  : "cplusplus",
 "h"    : "cplusplus",
 "talon": "talon",
+"clj"  : "clojure",
+"cljs" : "clojure",
+"cljc" : "clojure",
 }
 
 regex_ext = re.compile("\.(\S*)\s*")
@@ -26,7 +29,13 @@ class CodeActions:
         if title == "":
             title = ui.active_window().doc
 
-        title = title.split(os.path.sep)[-1]
+        # vim in iTerm has title like:
+        #   file-name.ext (/path/to/file-name.ext) - VIM
+        # just grab the first split.
+        if title.endswith("- VIM"):
+            title = title.split(os.path.sep)[0]
+        else:
+            title = title.split(os.path.sep)[-1]
 
         m = regex_ext.search(title)
         if m:
